@@ -98,7 +98,7 @@ class Creature(AnimatedSprite):
         super().__init__(x, y, delay)  # xydelay.
         self.level = level
         self.velocity = [0, 0]
-        self.st_velocity = st_velocity
+        self.st_velocity = st_velocity  # Наибольшая скорость бега
         self.run_velocity = 0
         self.jump_velocity = jump_velocity
         self.height = height
@@ -212,6 +212,7 @@ class Creature(AnimatedSprite):
 class Player(Creature):
     def __init__(self, level, x, y, st_velocity=10, jump_velocity=20, delay=5, height=20):
         super().__init__(level, x, y, st_velocity, jump_velocity, delay, height)
+
     def update(self, eventolist=None):
         super().update(eventolist)
         if WINDOW_WIDTH // 2 < self.x < self.level.width - WINDOW_WIDTH // 2:
@@ -223,16 +224,34 @@ class Player(Creature):
         super().event_getter(eventolist)
         for i in eventolist:
             if i.type in (pygame.KEYDOWN, pygame.KEYUP):
-                true = True if i.type == pygame.KEYDOWN else False
+                down = True if i.type == pygame.KEYDOWN else False
                 i = i.key
-                if i == pygame.K_LEFT:
-                    self.actions['walk_left'] = true
-                if i == pygame.K_RIGHT:
-                    self.actions['walk_right'] = true
+                if i == pygame.K_LEFT and not self.actions['jump']:
+                    self.actions['walk_left'] = down
+                if i == pygame.K_RIGHT and not self.actions['jump']:
+                    self.actions['walk_right'] = down
                 if i == pygame.K_UP:
-                    self.actions['jump'] = true
-                    if true and self.standing:
+                    self.actions['jump'] = down
+                    if down and self.standing:
                         self.jump()
+
+
+class Enemy(Creature):
+    def __init__(self, level, x, y, st_velocity=10, jump_velocity=20, delay=5, height=20, walk_distance=120):
+        super().__init__(level, x, y, st_velocity, jump_velocity, delay, height)
+        self.walk_distance = walk_distance
+        self.turn_timer = self.walk_distance  # Кадры до поворота
+        self.actions['walk_right'] = True
+
+    def update(self, eventolist=None):
+        super().update(eventolist)
+        if self.turn_timer:
+            self.turn_timer -= 1
+        else:
+            self.turn_timer = self.walk_distance
+            self.actions['walk_right'] = not self.actions['walk_right']
+            self.actions['walk_left'] = not self.actions['walk_left']
+
 
 
 class Gun(AnimatedSprite):
