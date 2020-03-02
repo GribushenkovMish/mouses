@@ -58,13 +58,14 @@ class Game:
         self.current_level = None
 
         self.continues = True
+        self.exit = False
         self.timer = pygame.time.Clock()
 
         pygame.init()
         self.canvas = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
 
         self.menu_sprites = pygame.sprite.Group()
-        self.btn_start, self.btn_exit = AnimatedSprite(100, 10), AnimatedSprite(100, 30)
+        self.btn_start, self.btn_exit = AnimatedSprite(300, 200), AnimatedSprite(300, 400)
         self.init_menu()
 
     def init_menu(self):
@@ -85,12 +86,18 @@ class Game:
         self.menu_sprites.add(self.btn_exit)
 
     def menu(self):
+        self.exit = False
         self.continues = True
         while self.continues:
             eventolist = self.proc_events()
             for i in eventolist:
-                if i.type == pygame.KEYDOWN:
-                    self.btn_exit.move(100, 100)
+                if i.type == pygame.MOUSEBUTTONDOWN:
+                    m_pos = pygame.mouse.get_pos()
+                    if self.btn_start.rect.collidepoint(m_pos):
+                        self.continues = False
+                    elif self.btn_exit.rect.collidepoint(m_pos):
+                        self.continues = False
+                        self.exit = True
 
             self.menu_sprites.update()
             self.btn_start.move(self.btn_start.x, self.btn_start.y)
@@ -100,6 +107,8 @@ class Game:
             self.menu_sprites.draw(self.canvas)
 
             pygame.display.flip()
+        if not self.exit:
+            self.main()
 
     def main(self):
         self.continues = True
