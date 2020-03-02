@@ -226,9 +226,9 @@ class Player(Creature):
             if i.type in (pygame.KEYDOWN, pygame.KEYUP):
                 down = True if i.type == pygame.KEYDOWN else False
                 i = i.key
-                if i == pygame.K_LEFT and not self.actions['jump']:
+                if i == pygame.K_LEFT:
                     self.actions['walk_left'] = down
-                if i == pygame.K_RIGHT and not self.actions['jump']:
+                if i == pygame.K_RIGHT:
                     self.actions['walk_right'] = down
                 if i == pygame.K_UP:
                     self.actions['jump'] = down
