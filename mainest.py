@@ -7,7 +7,7 @@ game = main.Game()
 level1 = main.Level(game, '1.png', '1.jpeg')
 game.set_level(0)
 
-player_sht = main.Spritesheet('7OP3Z.png', 8, 4)
+player_sht = main.Spritesheet('player.png', 8, 4)
 enemy_sht = main.Spritesheet('enemy.png', 8, 4)
 
 player = main.Player(level1, 10, 10, st_velocity=4, delay=2)
@@ -44,4 +44,4 @@ enemy.add_animation('land_left', enemy_sht, [27, 28, 25])
 enemy.set_animation('walk_right')
 level1.sprites.add(enemy)
 
-game.main()
+game.menu()
