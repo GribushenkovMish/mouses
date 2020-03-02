@@ -219,6 +219,9 @@ class Player(Creature):
             self.level.cam_pos[0] = self.x - WINDOW_WIDTH // 2
         if WINDOW_HEIGHT // 2 < self.y < self.level.height - WINDOW_HEIGHT // 2:
             self.level.cam_pos[1] = self.y - WINDOW_HEIGHT // 2
+        if self.y >= 600:
+            self.level.game.continues = False
+            self.level.game.menu()
 
     def event_getter(self, eventolist):
         super().event_getter(eventolist)
